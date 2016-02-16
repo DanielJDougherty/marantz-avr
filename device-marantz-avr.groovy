@@ -29,9 +29,7 @@ metadata {
         command "inputSelect", ["string"] //define that inputSelect takes a string of the input name as a parameter
         command "inputNext"
         command "toggleMute"
-        command "getfunction"
-
-        
+    
         }
 
     simulator {
@@ -57,13 +55,9 @@ metadata {
         controlTile("level", "device.level", "slider", height: 1, width: 2, inactiveLabel: false, range: "(0..30)") {
             state "level", label: '${name}', action:"setLevel"
         }
-
-        standardTile("getfunction", "device.poll", width: 1, height: 1, decoration: "flat", canChangeIcon: false, inactiveLabel: true, canChangeBackground: false) {
-            state "poll", label: 'Get Function', action: "getfunction", backgroundColor: "#FFFFFF"
-        }
-           
+    
         main "switch"
-        details(["switch","input","mute","level","poll", "getfunction"])
+        details(["switch","input","mute","level","poll"])
     }
 }
 
@@ -205,11 +199,11 @@ def refresh() {
     def porthex = convertPortToHex(destPort)
     device.deviceNetworkId = "$hosthex:$porthex" 
 
-    def hubAction = new physicalgraph.device.HubAction(
+    def hubAction = [new physicalgraph.device.HubAction(
             'method': 'GET',
             'path': "/goform/formMainZone_MainZoneXmlStatus.xml",
             'headers': [ HOST: "$destIp:$destPort" ] 
-        )   
+        ), getfunction()]   
     
     log.debug("Get Main")      
     hubAction
